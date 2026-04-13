@@ -444,6 +444,11 @@ pfcon:
     innetwork: true
     storageEnv: fslink
 
+    # -- Set securityContext of containers created by pman to have the same securityContext as .global.podSecurityContext
+    # -- or the default fnndsc/cube container user, so that the container user can write to the shared volume's filesystem.
+    # -- Default behavior is to detect whether on OpenShift: if so, set as false, true otherwise.
+    setSecurityContext:
+
   # -- Extra environment variables.
   extraEnv:
     GUNICORN_CMD_ARGS: "--workers=4 --timeout=300"
@@ -452,10 +457,6 @@ pfcon:
     REMOVE_JOBS: "yes"
     IGNORE_LIMITS: "no"
 
-    # -- Set securityContext of containers created by pman to have the same securityContext as .global.podSecurityContext
-    # -- or the default fnndsc/cube container user, so that the container user can write to the shared volume's filesystem.
-    # -- Default behavior is to detect whether on OpenShift: if so, set as false, true otherwise.
-    setSecurityContext:
 
 # -- Configuration of PFDCM, the ChRIS PACS bridge
 pfdcm:

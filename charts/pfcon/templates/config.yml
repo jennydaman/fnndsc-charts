@@ -26,7 +26,7 @@ data:
   {{- fail "Do not set extraEnv.SECRET_KEY. Use secretKey instead." }}
   {{- end }}
   CONTAINER_ENV: kubernetes
-  STORAGE_TYPE: kubernetes_pvc
+  COMPUTE_VOLUME_TYPE: kubernetes_pvc
   JOB_NAMESPACE: {{ .Release.Namespace }}
   VOLUME_NAME: {{ include "pfcon.storebase" . }}
   {{- toYaml .Values.extraEnv | nindent 2 }}

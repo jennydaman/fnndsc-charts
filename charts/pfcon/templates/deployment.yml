@@ -69,7 +69,10 @@ spec:
           resources:
             {{- toYaml . | nindent 12 }}
           {{- end }}
-          {{- with .Values.securityContext }}
+          {{- if .Values.securityContext }}
+            {{- fail "Values.securityContext is deprecated, please set Values.containerSecurityContext" }}
+          {{- end }}
+          {{- with (merge .Values.containerSecurityContext .Values.global.containerSecurityContext) }}
           securityContext:
             {{- toYaml . | nindent 12 }}
           {{- end }}

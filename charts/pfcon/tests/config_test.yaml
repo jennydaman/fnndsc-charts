@@ -1,0 +1,24 @@
+suite: Configuration of pfcon
+templates:
+  - config.yml
+tests:
+  - it: should set STORAGE_ENV=zipfile when PFCON_INNETWORK=false
+    set:
+      extraEnv.PFCON_INNETWORK: 'false'
+    asserts:
+      - equal:
+          path: data.STORAGE_ENV
+          value: 'zipfile'
+  - it: should set STORAGE_ENV=fslink when PFCON_INNETWORK=true
+    set:
+      extraEnv.PFCON_INNETWORK: 'true'
+    asserts:
+      - equal:
+          path: data.STORAGE_ENV
+          value: 'fslink'
+  - it: should use a versioned image for PFCON_OP_IMAGE
+    asserts:
+      - matchRegex:
+          path: data.PFCON_OP_IMAGE
+          pattern: fnndsc/pfconopjob:\d+\.\d+\.\d+.*
+

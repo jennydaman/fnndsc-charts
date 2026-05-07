@@ -8,18 +8,6 @@ tests:
     asserts:
       - failedTemplate:
           errorMessage: Do not set extraEnv.SECRET_KEY. Use secretKey instead.
-  - it: should not allow extraEnv.PFCON_INNETWORK to be set
-    set:
-      extraEnv.PFCON_INNETWORK: true
-    asserts:
-      - failedTemplate:
-          errorMessage: Do not set extraEnv.PFCON_INNETWORK. Use config.innetwork instead.
-  - it: should not allow extraEnv.STORAGE_ENV to be set
-    set:
-      extraEnv.STORAGE_ENV: "filesystem"
-    asserts:
-      - failedTemplate:
-          errorMessage: Do not set extraEnv.STORAGE_ENV. Use config.storageEnv instead.
   - it: should fail when configuration has values under pfcon.* (deprecated in pfcon-2.0.0)
     set:
       pfcon.image.pullPolicy: Always

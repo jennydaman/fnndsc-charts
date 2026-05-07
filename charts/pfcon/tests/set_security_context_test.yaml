@@ -7,41 +7,28 @@ tests:
       - equal:
           path: data.CONTAINER_USER
           value: '1001:0'
-  - it: should set CONTAINER_USER to '1001:0' when config.setSecurityContext=true and global.podSecurityContext is undefined
+  - it: should allow CONTAINER_USER to be set
     set:
-      config.setSecurityContext: true
+      extraEnv.CONTAINER_USER: '20202:0'
     asserts:
       - equal:
           path: data.CONTAINER_USER
-          value: '1001:0'
-  - it: should set CONTAINER_USER to the value of global.podSecurityContext when config.setSecurityContext=true
+          value: '20202:0'
+  - it: should set CONTAINER_USER to the value of global.podSecurityContext
     set:
       global.podSecurityContext.runAsUser: 50505
       global.podSecurityContext.runAsGroup: 303
-      config.setSecurityContext: true
     asserts:
       - equal:
           path: data.CONTAINER_USER
           value: '50505:303'
-  - it: should allow CONTAINER_USER to be set when config.setSecurityContext is unset
+  - it: should prioritize containerSecurityContext over podSecurityContext, and deprioritize global
     set:
-      extraEnv.CONTAINER_USER: '20202:0'
+      global.podSecurityContext.runAsUser: 10000 # ignored because non-global value is set
+      global.containerSecurityContext.runAsGroup: 20000 # accepted
+      podSecurityContext.runAsUser: 30000 # accepted
+      podSecurityContext.runAsGroup: 40000 # ignored because global.containerSecurityContext takes priority
     asserts:
       - equal:
           path: data.CONTAINER_USER
-          value: '20202:0'
-  - it: should allow CONTAINER_USER to be set when config.setSecurityContext=true
-    set:
-      extraEnv.CONTAINER_USER: '20202:0'
-      config.setSecurityContext: true
-    asserts:
-      - equal:
-          path: data.CONTAINER_USER
-          value: '20202:0'
-  - it: should disallow setting of CONTAINER_USER when config.setSecurityContext=false
-    set:
-      extraEnv.CONTAINER_USER: '20202:0'
-      config.setSecurityContext: false
-    asserts:
-      - failedTemplate:
-          errorMessage: Cannot set value for .Values.extraEnv.CONTAINER_USER because .Values.config.setSecurityContext=false.
+          value: '30000:20000'

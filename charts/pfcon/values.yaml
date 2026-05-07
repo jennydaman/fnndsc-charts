@@ -22,12 +22,21 @@ global:
     # runAsUser: 123456
     # runAsGroup: 789
 
+  # -- optional security context to apply to all containers
+  containerSecurityContext: {}
+    # runAsUser: 123456
+    # runAsGroup: 789
+
 # -- deployment replicas
 replicaCount: 1
+
+annotations: {}
 
 podAnnotations: {}
 
 podSecurityContext: {}
+
+containerSecurityContext: {}
 
 service:
   type: ClusterIP
@@ -40,10 +49,6 @@ storage:
   storageClass: ""
 
 nodeSelector: {}
-
-# -- pfcon password. If left blank, either the previous value will be used,
-# -- or a value will be randomly generated.
-password:
 
 image:
   repository: ghcr.io/fnndsc/pfcon
@@ -59,35 +64,57 @@ resources:
     cpu: 500m
     memory: 512Mi
 
+# -- pfcon password. If left blank, either the previous value will be used,
+# -- or a value will be randomly generated.
+password:
+
 # -- flask secret key. If unset, either the previous value will be obtained from the Kubernetes API,
 # -- or a value will be randomly generated.
 secretKey:
 
-# -- pfcon configuration. You probably shouldn't change this.
-config:
-  innetwork: true
-  storageEnv: fslink
-  # -- Set securityContext of containers created by pman to have the same securityContext as .global.podSecurityContext
-  # -- or the default fnndsc/cube container user, so that the container user can write to the shared volume's filesystem.
-  # -- Default behavior is to detect whether on OpenShift: if so, set as false, true otherwise.
-  setSecurityContext:
-
-# -- Extra environment variables.
+# -- Extra environment variables. Supports templating.
+# -- Some of the default values here assume pfcon is being used as a subchart
+# -- for fnndsc/chris.
 # -- https://github.com/FNNDSC/pfcon#environment-variables
-# -- HINT: CONTAINER_ENV, STORAGE_TYPE, VOLUME_NAME, and CONTAINER_USER
-#          are handled automatically by Helm templating.
 extraEnv:
-  GUNICORN_CMD_ARGS: "--workers=4 --timeout=300"
-  JOB_LABELS: chrisproject.org/job=plugininstance
-  ENABLE_HOME_WORKAROUND: "yes"
-  REMOVE_JOBS: "yes"
-  IGNORE_LIMITS: "no"
+  # -- "In-network" mode. Set as "false" if deploying pfcon as standalone
+  # -- (i.e. not as a subchart of fnndsc/chris)
+  PFCON_INNETWORK: 'true'
+  # -- Storage mode. Options: fslink, filesystem, zipfile.
+  STORAGE_ENV: '{{ eq .Values.extraEnv.PFCON_INNETWORK "true" | ternary "fslink" "zipfile" }}'
+  # -- Set `CONTAINER_ENV=kubernetes`
+  CONTAINER_ENV: 'kubernetes'
+  # -- Set `COMPUTE_VOLUME_TYPE=kubernetes_pvc`
+  COMPUTE_VOLUME_TYPE: 'kubernetes_pvc'
+
+  # -- Name of k8s namespace where to create Jobs.
+  JOB_NAMESPACE: '{{ .Release.Namespace }}'
+  # -- Name of k8s PersistentVolumeClaim where to store data.
+  VOLUME_NAME: '{{ include "pfcon.storebase" . }}'
+  # -- Set securityContext on created jobs. The default value is a template
+  # -- which, if running in OpenShift, set as empty string, leaving control
+  # -- of the securityContext to the OpenShift. Otherwise, sets the value as
+  # -- "1001:0" which is the hard-coded default user in the ghcr.io/fnndsc/cube
+  # -- container.
+  CONTAINER_USER: >-
+    {{- $uid := .Values.containerSecurityContext.runAsUser | default .Values.global.containerSecurityContext.runAsUser | default .Values.podSecurityContext.runAsUser | default .Values.global.podSecurityContext.runAsUser | default nil }}
+    {{- $gid := .Values.containerSecurityContext.runAsGroup | default .Values.global.containerSecurityContext.runAsGroup | default .Values.podSecurityContext.runAsGroup | default .Values.global.podSecurityContext.runAsGroup | default nil }}
+    {{- if (or $uid $gid) -}}
+      {{- printf "%d:%d" ($uid | default 1001 | int64) ($gid | default 0 | int64) -}}
+    {{- else if not (.Capabilities.APIVersions.Has "security.openshift.io/v1/SecurityContextConstraints") -}}
+      1001:0
+    {{- end -}}
+  # -- Image to use for pfcon data copy/upload/delete jobs.
+  PFCON_OP_IMAGE: 'ghcr.io/fnndsc/pfconopjob:{{ .Chart.AppVersion }}'
+
+  GUNICORN_CMD_ARGS: '--workers=4 --timeout=300'
+  JOB_LABELS: 'chrisproject.org/job=plugininstance'
+  ENABLE_HOME_WORKAROUND: 'yes'
+  REMOVE_JOBS: 'yes'
+  IGNORE_LIMITS: 'no'
 
 # -- pfcon container hostPort.
 hostPort:
-
-# -- Container security context for pfcon.
-securityContext: {}
 
 # -- WIP support for `podman kube play`
 podman:

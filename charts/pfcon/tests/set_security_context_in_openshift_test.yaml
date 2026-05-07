@@ -5,15 +5,15 @@ capabilities:
 templates:
   - config.yml
 tests:
-  - it: should not set CONTAINER_USER in OpenShift
+  - it: should set empty value for CONTAINER_USER on OpenShift
     asserts:
-      - notExists:
+      - equal:
           path: data.CONTAINER_USER
-  - it: should set CONTAINER_USER to the value of global.podSecurityContext when setSecurityContext=true
+          value: ''
+  - it: should set CONTAINER_USER to the value of global.podSecurityContext
     set:
       global.podSecurityContext.runAsUser: 50505
       global.podSecurityContext.runAsGroup: 303
-      config.setSecurityContext: true
     asserts:
       - equal:
           path: data.CONTAINER_USER

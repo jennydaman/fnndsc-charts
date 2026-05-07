@@ -4,14 +4,14 @@ templates:
 tests:
   - it: should set STORAGE_ENV=zipfile when PFCON_INNETWORK=false
     set:
-      extraEnv.PFCON_INNETWORK: 'false'
+      config.PFCON_INNETWORK: 'false'
     asserts:
       - equal:
           path: data.STORAGE_ENV
           value: 'zipfile'
   - it: should set STORAGE_ENV=fslink when PFCON_INNETWORK=true
     set:
-      extraEnv.PFCON_INNETWORK: 'true'
+      config.PFCON_INNETWORK: 'true'
     asserts:
       - equal:
           path: data.STORAGE_ENV

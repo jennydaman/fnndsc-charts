@@ -16,7 +16,7 @@ spec:
         {{- with .Values.podAnnotations }}
           {{- toYaml . | nindent 8 }}
         {{- end }}
-        checksum/config: {{ .Values.extraEnv | mustToJson | sha256sum }}
+        checksum/config: {{ .Values.config | mustToJson | sha256sum }}
       labels:
         {{- include "pfcon.selectorLabels" . | nindent 8 }}
     spec:
@@ -44,15 +44,8 @@ spec:
                 name: {{ .Release.Name }}-pfcon
             - secretRef:
                 name: {{ .Release.Name }}-pfcon
-          env:
-            - name: STOREBASE_MOUNT
-              value: /data
-            {{- range $k, $v := .Values.extraEnv }}
-            - name: {{ $k }}
-              value: {{ $v | quote }}
-            {{- end }}
           volumeMounts:
-            - mountPath: /data
+            - mountPath: {{ .Values.config.STOREBASE_MOUNT | required "config.STOREBASE_MOUNT is a required configuration for pfcon" }}
               name: storebase
           ports:
             - name: http

@@ -48,7 +48,7 @@ spec:
                                       (.Values.pfcon.service.port))
                         "username"  "$PFCON_USER"
                         "password"  "$PFCON_PASSWORD"
-                        "innetwork" .Values.pfcon.config.innetwork)
+                        "innetwork" (.Values.pfcon.config.PFCON_INNETWORK | toString | eq "true"))
                     | mustPrepend $computeResources
                     | set .Values.chrisomatic.config.cube "compute_resource"
                 }}

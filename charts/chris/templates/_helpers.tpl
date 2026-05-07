@@ -61,7 +61,7 @@ nats://this.is.a.placeholder
 {{- end -}}
 
 {{- define "cube.useOwnVolume" -}}
-  {{- if (and .Values.pfcon.enabled .Values.pfcon.config.innetwork) -}}
+  {{- if (and .Values.pfcon.enabled (.Values.pfcon.config.PFCON_INNETWORK | toString | eq "true")) -}}
     {{- /* no (empty value) */ -}}
   {{- else -}}
     yes

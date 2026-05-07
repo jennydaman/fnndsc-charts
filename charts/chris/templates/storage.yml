@@ -9,9 +9,9 @@
   {{- $isUsingOwnVolume := (eq "yes" (include "cube.useOwnVolume" .)) }}
   {{- $wasUsingOwnVolume := (not (empty (lookup "v1" "PersistentVolumeClaim" .Release.Namespace (include "chris.fullname" .)))) -}}
   {{- if (and $isUsingOwnVolume (not $wasUsingOwnVolume)) }}
-    {{- fail "Cannot set pfcon.enabled=false and/or pfcon.config.innetwork=false now because CUBE currently depends on pfcon configured in \"innetwork\" mode for storage." -}}
+    {{- fail "Cannot set pfcon.enabled=false and/or pfcon.config.PFCON_INNETWORK=false now because CUBE currently depends on pfcon configured in \"innetwork\" mode for storage." -}}
   {{- else if (and (not $isUsingOwnVolume) $wasUsingOwnVolume) -}}
-    {{- fail "Cannot set pfcon.enabled=true and/or pfcon.config.innetwork=true now because CUBE is using its own PersistentVolumeClaim for storage." -}}
+    {{- fail "Cannot set pfcon.enabled=true and/or pfcon.config.PFCON_INNETWORK=true now because CUBE is using its own PersistentVolumeClaim for storage." -}}
   {{- end -}}
 {{- end -}}
 

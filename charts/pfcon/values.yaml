@@ -72,20 +72,20 @@ password:
 # -- or a value will be randomly generated.
 secretKey:
 
-# -- Extra environment variables. Supports templating.
-# -- Some of the default values here assume pfcon is being used as a subchart
-# -- for fnndsc/chris.
+# -- Configuration environment variables. Supports templating.
 # -- https://github.com/FNNDSC/pfcon#environment-variables
-extraEnv:
+config:
   # -- "In-network" mode. Set as "false" if deploying pfcon as standalone
   # -- (i.e. not as a subchart of fnndsc/chris)
   PFCON_INNETWORK: 'true'
   # -- Storage mode. Options: fslink, filesystem, zipfile.
-  STORAGE_ENV: '{{ eq .Values.extraEnv.PFCON_INNETWORK "true" | ternary "fslink" "zipfile" }}'
+  STORAGE_ENV: '{{ eq .Values.config.PFCON_INNETWORK "true" | ternary "fslink" "zipfile" }}'
   # -- Set `CONTAINER_ENV=kubernetes`
   CONTAINER_ENV: 'kubernetes'
   # -- Set `COMPUTE_VOLUME_TYPE=kubernetes_pvc`
   COMPUTE_VOLUME_TYPE: 'kubernetes_pvc'
+  # -- Mountpoint for volume
+  STOREBASE_MOUNT: '/data'
 
   # -- Name of k8s namespace where to create Jobs.
   JOB_NAMESPACE: '{{ .Release.Namespace }}'

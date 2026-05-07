@@ -8,11 +8,11 @@
 {{- if (hasKey .Values "pman") }}
   {{- fail "Deprecated configuration: pman was removed, please unset all values in pman.* of the pfcon chart." }}
 {{- end }}
-{{- if (hasKey .Values.extraEnv "SECRET_KEY") }}
-  {{- fail "Do not set extraEnv.SECRET_KEY. Use secretKey instead." }}
+{{- if (hasKey .Values.config "SECRET_KEY") }}
+  {{- fail "Do not set config.SECRET_KEY. Use secretKey instead." }}
 {{- end }}
-{{- if (hasKey .Values.extraEnv "PFCON_PASSWORD") }}
-  {{- fail "Do not set extraEnv.PFCON_PASSWORD. Use password instead." }}
+{{- if (hasKey .Values.config "PFCON_PASSWORD") }}
+  {{- fail "Do not set config.PFCON_PASSWORD. Use password instead." }}
 {{- end }}
 apiVersion: v1
 kind: ConfigMap
@@ -22,6 +22,6 @@ metadata:
   labels:
     {{- include "pfcon.labels" . | nindent 4 }}
 data:
-  {{- range $k, $v := .Values.extraEnv }}
+  {{- range $k, $v := .Values.config }}
   {{ $k }}: {{ tpl (toString $v) $ | quote }}
   {{- end }}

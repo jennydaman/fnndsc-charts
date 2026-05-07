@@ -9,7 +9,7 @@ tests:
           value: '1001:0'
   - it: should allow CONTAINER_USER to be set
     set:
-      extraEnv.CONTAINER_USER: '20202:0'
+      config.CONTAINER_USER: '20202:0'
     asserts:
       - equal:
           path: data.CONTAINER_USER

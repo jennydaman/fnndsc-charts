@@ -180,8 +180,10 @@ spec:
           command:
             {{- .command | required "command is a required parameter of the cube.deployment helper function." | toYaml | nindent 12 }}
           {{- include "chris.imageEnvAndMounts" $ | nindent 10 }}
+          {{- with .resources }}
           resources:
-            {{- .resources | required "resources is a required parameter of the cube.deployment helper function." | toYaml | nindent 12 }}
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
           {{- if .httpPort }}
           ports:
             - name: http

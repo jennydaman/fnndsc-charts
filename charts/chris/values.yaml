@@ -151,7 +151,7 @@ cube:
   # -- Celery beat scheduler configuration.
   celeryBeat:
     # -- Command to run for the celery beat scheduler.
-    command: ["celery", "-A", "core", "beat", "-l", "info", "--scheduler", "django_celery_beat.schedulers:DatabaseScheduler"]
+    command: ['celery', '-A', 'core', 'beat', '-l', 'info', '--scheduler', 'django_celery_beat.schedulers:DatabaseScheduler']
     # -- Resources for celery beat. Defaults are good enough.
     resources:
       requests:
@@ -164,7 +164,7 @@ cube:
   # -- Main celery worker configuration.
   workerMains:
     # -- Command to run for the main worker.
-    command: ["celery", "-A", "core", "worker", "-c", "4", "-l", "info", "-Q", "main1,main2"]
+    command: ['celery', '-A', 'core', 'worker', '-c', '4', '-l', 'info', '-Q', 'main1,main2']
     # -- Resources for the main worker.
     # -- If an out-of-network pfcon is configured, recommended memory limit is twice
     # -- the largest anticipated plugin instance output directory's total size.

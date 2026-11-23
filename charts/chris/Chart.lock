@@ -3,13 +3,13 @@ dependencies:
   repository: oci://ghcr.io/dragonflydb/dragonfly/helm
   version: v1.37.0
 - name: pfcon
-  repository: https://fnndsc.github.io/charts
-  version: 2.0.0
+  repository: file://../pfcon
+  version: 2.0.0-alpha.1
 - name: orthanc
   repository: https://fnndsc.github.io/charts
   version: 2.0.1
 - name: util
   repository: https://fnndsc.github.io/charts
   version: 0.2.1
-digest: sha256:f0084a84c739142eb820b35715a713005d7eaf92bfd4a628a5db8f719fb5bee3
-generated: "2026-03-25T18:25:26.677683764-04:00"
+digest: sha256:743c920e34f1cd38f307fddf58f7d268e7e74a53e59efbb2aeaf7b15aa7c45b9
+generated: "2026-06-29T15:17:10.221727013-04:00"

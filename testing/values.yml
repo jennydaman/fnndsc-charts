@@ -1,0 +1,32 @@
+# values.yaml file for testing charts/chris
+# --
+# NOTE:
+# - Resource requests are lowered for GitHub's VMs
+#   https://docs.github.com/en/actions/using-github-hosted-runners/about-github-hosted-runners/about-github-hosted-runners#supported-runners-and-hardware-resources
+
+cube:
+  config:
+    DISABLE_USER_ACCOUNT_CREATION: "false"
+  storage:
+    accessModes: [ "ReadWriteOnce" ]
+
+  celeryBeat:
+    resources: ~
+  workerMains:
+    command: ['celery', '-A', 'core', 'worker', '-c', '1', '-l', 'info', '-Q', 'main1,main2']
+    resources: ~
+  workerPeriodic:
+    command: ['celery', '-A', 'core', 'worker', '-c', '1', '-l', 'info', '-Q', 'periodic']
+    resources: ~
+  server:
+    service:
+      type: NodePort
+      nodePort: 32000
+    resources:
+      requests: ~
+
+pfcon:
+  enabled: false
+  storage:
+    size: 1Gi
+    accessModes: [ "ReadWriteOnce" ]

@@ -25,10 +25,10 @@ tests:
       pfcon.enabled: true
     asserts:
       - failedTemplate:
-          errorMessage: Cannot set pfcon.enabled=true and/or pfcon.config.innetwork=true now because CUBE is using its own PersistentVolumeClaim for storage.
+          errorMessage: Cannot set pfcon.enabled=true and/or pfcon.config.PFCON_INNETWORK=true now because CUBE is using its own PersistentVolumeClaim for storage.
   - it: should not allow pfcon to be changed to innetwork mode.
     set:
-      pfcon.config.innetwork: true
+      pfcon.config.PFCON_INNETWORK: "true"
     asserts:
       - failedTemplate:
-          errorMessage: Cannot set pfcon.enabled=true and/or pfcon.config.innetwork=true now because CUBE is using its own PersistentVolumeClaim for storage.
+          errorMessage: Cannot set pfcon.enabled=true and/or pfcon.config.PFCON_INNETWORK=true now because CUBE is using its own PersistentVolumeClaim for storage.

@@ -162,7 +162,7 @@ spec:
             - sh
             - -c
             - |
-              output="$(kubectl -n {{ $.Release.Namespace }} wait --for=condition=complete jobs/{{ include "chris.migrate-job" $ }})"
+              output="$(kubectl -n {{ $.Release.Namespace }} wait --for=condition=complete jobs/{{ include "chris.migrate-job" $ }} 2>&1)"
               code=$?
               echo "$output"
               if [[ "$output" = *NotFound* ]]; then

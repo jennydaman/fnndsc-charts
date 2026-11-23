@@ -1,0 +1,16 @@
+repositories:
+  - name: fnndsc
+    url: https://fnndsc.github.io/charts
+
+helmDefaults:
+  diffArgs: [ --dry-run=server ]
+  kubeContext: kind-khris
+
+releases:
+    # NOTE: name and namespace are hard-coded as easy-to-type nonsense words
+  - name: cacao
+    namespace: kk
+    chart: ../charts/chris
+    values:
+      - ./values.yml
+      - ./default-values.yaml

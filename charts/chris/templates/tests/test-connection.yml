@@ -84,8 +84,6 @@ spec:
           dircopy = search.results[0]
 
           dircopy_params = PluginInstanceRequest(
-              cpu_limit=100,
-              memory_limit=200,
               additional_properties={
                   'dir': upload_dir
               }

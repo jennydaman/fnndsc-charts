@@ -456,6 +456,7 @@ pfcon:
     # -- of the securityContext to the OpenShift. Otherwise, sets the value as
     # -- "1001:0" which is the hard-coded default user in the ghcr.io/fnndsc/cube
     # -- container.
+    # TODO Move this into the pfcon chart
     CONTAINER_USER: >-
       {{- $uid := .Values.containerSecurityContext.runAsUser | default .Values.global.containerSecurityContext.runAsUser | default .Values.podSecurityContext.runAsUser | default .Values.global.podSecurityContext.runAsUser | default nil }}
       {{- $gid := .Values.containerSecurityContext.runAsGroup | default .Values.global.containerSecurityContext.runAsGroup | default .Values.podSecurityContext.runAsGroup | default .Values.global.podSecurityContext.runAsGroup | default nil }}
